@@ -1,18 +1,33 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import ProductForm
+from .models import Product
 
-# Create your views here.
-from django.shortcuts import render, get_object_or_404
-from .models import Product, Category
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')
+    else:
+        form = ProductForm()
+    return render(request, 'store/add_product.html', {'form': form})
 
 def product_list(request):
     products = Product.objects.all()
-    return render(request, 'store/product_list.html', {'products': products})
 
-def product_detail(request, pk):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')
+    else:
+        form = ProductForm()
+
+    return render(request, 'store/product_list.html', {'products': products, 'form': form})
+
+def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    return render(request, 'store/product_detail.html', {'product': product})
-
-def category_products(request, slug):
-    category = get_object_or_404(Category, slug=slug)
-    products = Product.objects.filter(category=category)
-    return render(request, 'store/category_products.html', {'category': category, 'products': products})
+    if request.method == 'POST':
+        product.delete()
+        return redirect('product_list')
+    return render(request, 'store/delete_confirm.html', {'product': product})

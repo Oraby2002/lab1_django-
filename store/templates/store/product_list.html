@@ -1,14 +1,25 @@
-{% extends 'store/base.html' %}
+<h2>Add New Product</h2>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Add Product</button>
+</form>
 
-{% block content %}
-  <h2>All Products</h2>
-  <ul>
-    {% for product in products %}
-      <li>
-        <a href="{% url 'product_detail' product.pk %}">
-          {{ product.name }} - ${{ product.price }}
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
-{% endblock %}
+<hr>
+
+<ul>
+  {% for product in products %}
+    <li>
+      <strong>{{ product.name }}</strong> - {{ product.price }}$
+      <br>
+      Added on: {{ product.date_added|date:"Y-m-d H:i" }}
+      {% if product.image %}
+        <br><img src="{{ product.image.url }}" width="100">
+      {% endif %}
+      <form method="post" action="{% url 'delete_product' product.pk %}">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+      </form>
+    </li>
+  {% endfor %}
+</ul>
