@@ -1,6 +1,11 @@
 from django.urls import path
 from . import views
 from .views import * #ProductListView, ProductDeleteView,CategoryListView, CategoryCreateView,CategoryUpdateView, CategoryDeleteView
+from rest_framework.routers import DefaultRouter
+from .views import ProductViewSet
+
+router = DefaultRouter()
+router.register(r'products', ProductViewSet, basename='product')
 
 urlpatterns = [
 
@@ -19,5 +24,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('products/', views.product_list_create, name='product-list-create'),
     path('products/update/<int:pk>/', views.ProductUpdateAPIView.as_view(), name='product_update'),
-
+    path('products/detail/<int:pk>/', ProductRetrieveUpdateDestroyAPIView.as_view(), name='product-detail-update-delete'),
+  
 ]
+
+urlpatterns += router.urls
