@@ -1,12 +1,15 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+
 <h2>Add New Product</h2>
-<form method="post" enctype="multipart/form-data">
+<!-- <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Add Product</button>
-</form>
+</form> -->
 
 <hr>
-
 <ul>
   {% for product in products %}
     <li>
@@ -16,10 +19,12 @@
       {% if product.image %}
         <br><img src="{{ product.image.url }}" width="100">
       {% endif %}
-      <form method="post" action="{% url 'delete_product' product.pk %}">
-        {% csrf_token %}
-        <button type="submit">Delete</button>
-      </form>
+      <br><a href="{% url 'update_product' product.pk %}">Edit</a>
+      |
+      <a href="{% url 'delete_product' product.pk %}">Delete</a>
     </li>
   {% endfor %}
 </ul>
+
+<a href="{% url 'add_product' %}">+ Add New Product</a>
+{% endblock %}
